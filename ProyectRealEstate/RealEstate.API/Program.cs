@@ -50,10 +50,14 @@ builder.Services.AddMediatR(cfg =>
 
 });
 
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0); // versión por defecto v1.0
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});
 
-// Application & Infrastructure
-//builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
-//    typeof(RealEstate.Application.Commands.CreateOwnerCommand).Assembly));
+
 
 
 builder.Configuration

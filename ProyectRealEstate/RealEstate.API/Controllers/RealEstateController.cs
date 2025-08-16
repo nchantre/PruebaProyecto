@@ -4,46 +4,95 @@ using RealEstate.Application.Commands.Owner;
 using RealEstate.Application.Owers.DTOs;
 using RealEstate.Application.Queries.Owner;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace RealEstate.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class RealEstateController : ControllerBase
     {
-
         private readonly IMediator _mediator;
 
         public RealEstateController(IMediator mediator) => _mediator = mediator;
 
+        /// <summary>
+        /// Crear un nuevo propietario
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<OwnerDto>> Create(CreateOwnertCommand command) =>
-            Ok(await _mediator.Send(command));
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<OwnerDto>> Update(string id, UpdateOwnertCommand command)
+        [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Create([FromBody] CreateOwnertCommand command)
         {
-            command.IdOwner = id;
-            return Ok(await _mediator.Send(command));
+            if (command == null)
+                return BadRequest("El comando no puede ser nulo.");
+
+            var result = await _mediator.Send(command);
+
+            // Devuelve 201 Created con la URL del recurso creado
+            return CreatedAtAction(nameof(GetById), new { id = result.IdOwner, version = "1.0" }, result);
         }
 
+        /// <summary>
+        /// Actualizar un propietario existente
+        /// </summary>
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Update(string id, [FromBody] UpdateOwnertCommand command)
+        {
+            if (command == null)
+                return BadRequest("El comando no puede ser nulo.");
+
+            command.IdOwner = id;
+            var result = await _mediator.Send(command);
+
+            if (result == null)
+                return NotFound($"No se encontró el propietario con Id = {id}");
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Eliminar un propietario
+        /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(string id)
         {
-            await _mediator.Send(new DeleteOwnertCommand { IdOwner = id });
+            var deleted = await _mediator.Send(new DeleteOwnertCommand { IdOwner = id });
+
+            if (!deleted)
+                return NotFound($"No se encontró el propietario con Id = {id}");
+
             return NoContent();
         }
 
+        /// <summary>
+        /// Obtener un propietario por Id
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<OwnerDto>> GetById(string id) =>
-            Ok(await _mediator.Send(new GetOwnertByIdQuery { IdOwner = id }));
+        [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var result = await _mediator.Send(new GetOwnertByIdQuery { IdOwner = id });
 
+            if (result == null)
+                return NotFound($"No se encontró el propietario con Id = {id}");
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Obtener todos los propietarios
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<List<OwnerDto>>> GetAll() =>
-            Ok(await _mediator.Send(new GetAllOwnertsQuery()));
-
-
-
+        [ProducesResponseType(typeof(List<OwnerDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _mediator.Send(new GetAllOwnertsQuery());
+            return Ok(result);
+        }
     }
 }
