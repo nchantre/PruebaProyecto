@@ -2,6 +2,7 @@
 
 namespace RealEstate.Domain.Interfaces
 {
+
     public interface IMongoUnitWork
     {
         IMongoDatabase Database { get; }

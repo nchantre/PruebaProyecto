@@ -1,8 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RealEstate.Domain.Entities
 {
+    [ExcludeFromCodeCoverage]
     public class Ownert
     {
         [BsonId]
@@ -12,6 +14,6 @@ namespace RealEstate.Domain.Entities
         public string Address { get; set; } = default!;
         public string Photo { get; set; } = default!;
         public DateTime Birthday { get; set; }
-        public List<Property> Properties { get; set; }= new();
+        public List<Property> Properties { get; set; } = new();
     }
 }

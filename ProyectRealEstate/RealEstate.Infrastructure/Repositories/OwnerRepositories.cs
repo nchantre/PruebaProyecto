@@ -1,7 +1,6 @@
 ﻿using MongoDB.Driver;
 using RealEstate.Domain.Entities;
 using RealEstate.Domain.Repositories;
-using RealEstate.Domain.Interfaces;
 
 namespace RealEstate.Infrastructure.Repositories
 {

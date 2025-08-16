@@ -1,6 +1,4 @@
-﻿using RealEstate.Domain.Entities;
-
-namespace RealEstate.Application.Owers.DTOs
+﻿namespace RealEstate.Application.Owers.DTOs
 {
     public class OwnertDto
     {

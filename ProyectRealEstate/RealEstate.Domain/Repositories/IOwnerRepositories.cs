@@ -2,6 +2,7 @@
 
 namespace RealEstate.Domain.Repositories
 {
+
     public interface IOwnerRepositories
     {
         Task AddAsync(Ownert ownert);

@@ -1,5 +1,8 @@
-﻿namespace RealEstate.Domain.Entities
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace RealEstate.Domain.Entities
 {
+    [ExcludeFromCodeCoverage]
     public class PropertyImage
     {
         public string File { get; set; } = default!;

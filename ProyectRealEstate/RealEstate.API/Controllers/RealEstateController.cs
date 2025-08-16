@@ -10,7 +10,7 @@ namespace RealEstate.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RealEstateController: ControllerBase
+    public class RealEstateController : ControllerBase
     {
 
         private readonly IMediator _mediator;

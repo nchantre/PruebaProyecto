@@ -1,5 +1,8 @@
-﻿namespace RealEstate.Domain.Entities
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace RealEstate.Domain.Entities
 {
+    [ExcludeFromCodeCoverage]
     public class PropertyTrace
     {
         public DateTime DateSale { get; set; }

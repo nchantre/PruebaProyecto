@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nuget.LogService.Services;
-using RealEstate.Application.Handlers.Owner;
 using RealEstate.Application.Mappings;
 using RealEstate.Domain.Interfaces;
 using RealEstate.Domain.Repositories;

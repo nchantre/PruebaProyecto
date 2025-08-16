@@ -1,12 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
 using RealEstate.API.Extensions;
 using RealEstate.Application;
 using RealEstate.Application.Handlers.Owner;
 using RealEstate.Application.LogServices.CreateError;
-using RealEstate.Application.Mappings;
 using RealEstate.Infrastructure;
 using Serilog;
 
@@ -47,7 +44,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(CreateOwnertHandler).Assembly);
-   
+
 });
 
 
