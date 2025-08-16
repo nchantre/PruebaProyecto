@@ -1,22 +1,24 @@
 ﻿using MediatR;
 using RealEstate.Application.Commands.Owner;
-using RealEstate.Domain.Repositories;
+using RealEstate.Application.Services;
+
 
 namespace RealEstate.Application.Handlers.Owner
 {
     public class DeleteOwnertHandler : IRequestHandler<DeleteOwnertCommand, bool>
     {
-        private readonly IOwnerRepositories _repository;
 
-        public DeleteOwnertHandler(IOwnerRepositories repository)
+        private readonly OwnerService _service;
+
+        public DeleteOwnertHandler(OwnerService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         public async Task<bool> Handle(DeleteOwnertCommand request, CancellationToken cancellationToken)
         {
-            await _repository.DeleteAsync(request.IdOwner);
-            return true; // o false si algo falla
+            await _service.DeleteAsync(request.IdOwner);
+            return true;
         }
     }
 }

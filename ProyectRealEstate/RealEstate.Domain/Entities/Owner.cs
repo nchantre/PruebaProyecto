@@ -5,11 +5,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace RealEstate.Domain.Entities
 {
     [ExcludeFromCodeCoverage]
-    public class Ownert
+    public class Owner
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? IdOwner { get; set; } = default!;
+        public string IdOwner { get; set; } = default!;
+
+
+
         public string Name { get; set; } = default!;
         public string Address { get; set; } = default!;
         public string Photo { get; set; } = default!;

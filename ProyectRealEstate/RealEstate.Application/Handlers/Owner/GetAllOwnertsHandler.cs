@@ -2,25 +2,26 @@
 using MediatR;
 using RealEstate.Application.Owers.DTOs;
 using RealEstate.Application.Queries.Owner;
-using RealEstate.Domain.Repositories;
+using RealEstate.Application.Services;
 
 namespace RealEstate.Application.Handlers.Owner
 {
-    public class GetAllOwnertsHandler : IRequestHandler<GetAllOwnertsQuery, List<OwnertDto>>
+    public class GetAllOwnertsHandler : IRequestHandler<GetAllOwnertsQuery, List<OwnerDto>>
     {
-        private readonly IOwnerRepositories _repository;
+        private readonly OwnerService _service;
+
         private readonly IMapper _mapper;
 
-        public GetAllOwnertsHandler(IOwnerRepositories repository, IMapper mapper)
+        public GetAllOwnertsHandler(OwnerService service, IMapper mapper)
         {
-            _repository = repository;
+            _service = service;
             _mapper = mapper;
         }
 
-        public async Task<List<OwnertDto>> Handle(GetAllOwnertsQuery query, CancellationToken ct)
+        public async Task<List<OwnerDto>> Handle(GetAllOwnertsQuery query, CancellationToken ct)
         {
-            var ownerts = await _repository.GetAllAsync();
-            return _mapper.Map<List<OwnertDto>>(ownerts);
+            var ownerts = await _service.GetAllAsync();
+            return _mapper.Map<List<OwnerDto>>(ownerts);
         }
     }
 }

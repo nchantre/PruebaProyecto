@@ -3,7 +3,7 @@ using RealEstate.Application.Owers.DTOs;
 
 namespace RealEstate.Application.Commands.Owner
 {
-    public class UpdateOwnertCommand : IRequest<OwnertDto>
+    public class UpdateOwnertCommand : IRequest<OwnerDto>
     {
         public string IdOwner { get; set; } = default!;
         public string Name { get; set; } = default!;

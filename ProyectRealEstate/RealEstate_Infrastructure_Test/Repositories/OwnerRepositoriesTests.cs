@@ -9,16 +9,16 @@ namespace RealEstate.Infrastructure.Tests.Repositories
     [TestFixture]
     public class OwnerRepositoriesTests
     {
-        private Mock<IMongoCollection<Ownert>> _collectionMock;
+        private Mock<IMongoCollection<Owner>> _collectionMock;
         private Mock<IMongoDatabase> _databaseMock;
         private OwnerRepositories _repository;
 
         [SetUp]
         public void SetUp()
         {
-            _collectionMock = new Mock<IMongoCollection<Ownert>>();
+            _collectionMock = new Mock<IMongoCollection<Owner>>();
             _databaseMock = new Mock<IMongoDatabase>();
-            _databaseMock.Setup(db => db.GetCollection<Ownert>("Owner", null))
+            _databaseMock.Setup(db => db.GetCollection<Owner>("Owner", null))
                 .Returns(_collectionMock.Object);
 
             _repository = new OwnerRepositories(_databaseMock.Object);
@@ -27,7 +27,7 @@ namespace RealEstate.Infrastructure.Tests.Repositories
         [Test]
         public async Task AddAsync_Calls_InsertOneAsync()
         {
-            var ownert = new Ownert { IdOwner = "1", Name = "Test", Address = "Addr", Photo = "Photo" };
+            var ownert = new Owner { IdOwner = "1", Name = "Test", Address = "Addr", Photo = "Photo" };
             await _repository.AddAsync(ownert);
 
             _collectionMock.Verify(c => c.InsertOneAsync(ownert, null, default), Times.Once);
@@ -36,11 +36,11 @@ namespace RealEstate.Infrastructure.Tests.Repositories
         [Test]
         public async Task UpdateAsync_Calls_ReplaceOneAsync()
         {
-            var ownert = new Ownert { IdOwner = "1", Name = "Test", Address = "Addr", Photo = "Photo" };
+            var ownert = new Owner { IdOwner = "1", Name = "Test", Address = "Addr", Photo = "Photo" };
             await _repository.UpdateAsync(ownert);
 
             _collectionMock.Verify(c => c.ReplaceOneAsync(
-                It.IsAny<FilterDefinition<Ownert>>(),
+                It.IsAny<FilterDefinition<Owner>>(),
                 ownert,
                 It.IsAny<ReplaceOptions>(),
                 default), Times.Once);
@@ -52,18 +52,18 @@ namespace RealEstate.Infrastructure.Tests.Repositories
             await _repository.DeleteAsync("1");
 
             _collectionMock.Verify(c => c.DeleteOneAsync(
-                It.IsAny<FilterDefinition<Ownert>>(),
+                It.IsAny<FilterDefinition<Owner>>(),
                 default), Times.Once);
         }
 
         [Test]
         public async Task GetByIdAsync_Calls_Find_And_FirstOrDefaultAsync()
         {
-            var findFluentMock = new Mock<IAsyncCursor<Ownert>>();
-            var findMock = new Mock<IFindFluent<Ownert, Ownert>>();
-            findMock.Setup(f => f.FirstOrDefaultAsync(default)).ReturnsAsync(new Ownert { IdOwner = "1" });
+            var findFluentMock = new Mock<IAsyncCursor<Owner>>();
+            var findMock = new Mock<IFindFluent<Owner, Owner>>();
+            findMock.Setup(f => f.FirstOrDefaultAsync(default)).ReturnsAsync(new Owner { IdOwner = "1" });
 
-            _collectionMock.Setup(c => c.Find(It.IsAny<FilterDefinition<Ownert>>(), null))
+            _collectionMock.Setup(c => c.Find(It.IsAny<FilterDefinition<Owner>>(), null))
                 .Returns(findMock.Object);
 
             var result = await _repository.GetByIdAsync("1");
@@ -77,9 +77,9 @@ namespace RealEstate.Infrastructure.Tests.Repositories
         public async Task GetAllAsync_Calls_Find_And_ReturnsList()
         {
             // Arrange
-            var expectedList = new List<Ownert> { new Ownert { IdOwner = "1" } };
+            var expectedList = new List<Owner> { new Owner { IdOwner = "1" } };
 
-            var findMock = new Mock<IFindFluent<Ownert, Ownert>>();
+            var findMock = new Mock<IFindFluent<Owner, Owner>>();
 
             // Configurar ToListAsync para que devuelva la lista esperada
             findMock
@@ -89,11 +89,11 @@ namespace RealEstate.Infrastructure.Tests.Repositories
             // También puedes devolver self en ciertas configuraciones (por si se encadenan llamadas)
             findMock
                 .SetupGet(f => f.Options)
-                .Returns(new FindOptions<Ownert, Ownert>());
+                .Returns(new FindOptions<Owner, Owner>());
 
             // Configurar _collection.Find(...) para devolver nuestro findMock
             _collectionMock
-                .Setup(c => c.Find(It.IsAny<Expression<Func<Ownert, bool>>>(), null))
+                .Setup(c => c.Find(It.IsAny<Expression<Func<Owner, bool>>>(), null))
                 .Returns(findMock.Object);
 
             // Act

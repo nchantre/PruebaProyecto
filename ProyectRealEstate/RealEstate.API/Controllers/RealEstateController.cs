@@ -18,11 +18,11 @@ namespace RealEstate.API.Controllers
         public RealEstateController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
-        public async Task<ActionResult<OwnertDto>> Create(CreateOwnertCommand command) =>
+        public async Task<ActionResult<OwnerDto>> Create(CreateOwnertCommand command) =>
             Ok(await _mediator.Send(command));
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<OwnertDto>> Update(string id, UpdateOwnertCommand command)
+        public async Task<ActionResult<OwnerDto>> Update(string id, UpdateOwnertCommand command)
         {
             command.IdOwner = id;
             return Ok(await _mediator.Send(command));
@@ -36,11 +36,11 @@ namespace RealEstate.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<OwnertDto>> GetById(string id) =>
+        public async Task<ActionResult<OwnerDto>> GetById(string id) =>
             Ok(await _mediator.Send(new GetOwnertByIdQuery { IdOwner = id }));
 
         [HttpGet]
-        public async Task<ActionResult<List<OwnertDto>>> GetAll() =>
+        public async Task<ActionResult<List<OwnerDto>>> GetAll() =>
             Ok(await _mediator.Send(new GetAllOwnertsQuery()));
 
 

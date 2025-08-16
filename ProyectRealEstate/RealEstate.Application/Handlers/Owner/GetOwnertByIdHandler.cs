@@ -2,26 +2,34 @@
 using MediatR;
 using RealEstate.Application.Owers.DTOs;
 using RealEstate.Application.Queries.Owner;
-using RealEstate.Domain.Repositories;
+using RealEstate.Application.Services;
 
 namespace RealEstate.Application.Handlers.Owner
 {
-    public class GetOwnertByIdHandler : IRequestHandler<GetOwnertByIdQuery, OwnertDto>
+    public class GetOwnertByIdHandler : IRequestHandler<GetOwnertByIdQuery, OwnerDto>
     {
-        private readonly IOwnerRepositories _repository;
+        private readonly OwnerService _service;
         private readonly IMapper _mapper;
 
-        public GetOwnertByIdHandler(IOwnerRepositories repository, IMapper mapper)
+        public GetOwnertByIdHandler(OwnerService service, IMapper mapper)
         {
-            _repository = repository;
+            _service = service;
             _mapper = mapper;
         }
 
-        public async Task<OwnertDto> Handle(GetOwnertByIdQuery query, CancellationToken ct)
+        public async Task<OwnerDto> Handle(GetOwnertByIdQuery query, CancellationToken ct)
         {
-            var ownert = await _repository.GetByIdAsync(query.IdOwner)
-                ?? throw new KeyNotFoundException("Owner not found");
-            return _mapper.Map<OwnertDto>(ownert);
+            //var ownert = await _service.GetByIdAsync(query.IdOwner)
+            //    ?? throw new KeyNotFoundException("Owner not found");
+
+
+            var ownert = await _service.GetByIdAsync(query.IdOwner);
+
+            if (ownert == null)
+            {
+                throw new KeyNotFoundException($"Owner with Id {query.IdOwner} not found in DB");
+            }
+            return _mapper.Map<OwnerDto>(ownert);
         }
     }
 }

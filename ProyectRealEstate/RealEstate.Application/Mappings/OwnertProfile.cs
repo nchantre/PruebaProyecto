@@ -10,14 +10,14 @@ namespace RealEstate.Application.Mappings
         public OwnertProfile()
         {
             // Entity -> DTO
-            CreateMap<Ownert, OwnertDto>().ReverseMap();
+            CreateMap<Owner, OwnerDto>().ReverseMap();
             CreateMap<Property, PropertyDto>().ReverseMap();
             CreateMap<PropertyImage, PropertyImageDto>().ReverseMap();
             CreateMap<PropertyTrace, PropertyTraceDto>().ReverseMap();
 
             // Command -> Entity
-            CreateMap<CreateOwnertCommand, Ownert>();
-            CreateMap<UpdateOwnertCommand, Ownert>();
+            CreateMap<CreateOwnertCommand, Owner>();
+            CreateMap<UpdateOwnertCommand, Owner>();
             CreateMap<PropertyDto, Property>();
             CreateMap<PropertyImageDto, PropertyImage>();
             CreateMap<PropertyTraceDto, PropertyTrace>();

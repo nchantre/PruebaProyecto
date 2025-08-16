@@ -5,11 +5,12 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nuget.LogService.Services;
 using RealEstate.Application.Mappings;
+using RealEstate.Application.Services;
 using RealEstate.Domain.Interfaces;
-using RealEstate.Domain.Repositories;
+using RealEstate.Infrastructure.Database;
 using RealEstate.Infrastructure.Mongo;
 using RealEstate.Infrastructure.Repositories;
-using RealEstate.Infrastructure.UnitOfWork;
+
 
 namespace RealEstate.Infrastructure
 {
@@ -39,9 +40,16 @@ namespace RealEstate.Infrastructure
                 return client.GetDatabase(settings.DatabaseName);
             });
 
+            // Configuración Mongo
+            services.Configure<MongoDbSettings>(
+                configuration.GetSection("MongoDbSettings"));
+            services.AddSingleton<MongoDbContext>();
+
             // Registrar UnitOfWork y repositorios
-            services.AddScoped<IMongoUnitWork, MongoUnitWork>();
-            services.AddScoped<IOwnerRepositories, OwnerRepositories>();
+            services.AddScoped<IOwnerRepository, OwnerRepository>();
+
+            // Servicios
+            services.AddScoped<OwnerService>();
 
             // Configurar servicio de logs
             var logAPIBaseURL = configuration.GetRequiredSection("ApiCentralLog:UrlBase").Value;

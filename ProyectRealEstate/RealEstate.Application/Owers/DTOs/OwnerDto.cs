@@ -1,6 +1,6 @@
 ﻿namespace RealEstate.Application.Owers.DTOs
 {
-    public class OwnertDto
+    public class OwnerDto
     {
         public string? IdOwner { get; set; } = default!;
         public string Name { get; set; } = default!;

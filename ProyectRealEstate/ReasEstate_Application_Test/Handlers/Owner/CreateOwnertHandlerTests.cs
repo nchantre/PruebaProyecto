@@ -36,7 +36,7 @@ namespace RealEstate.Application.Tests.Handlers.Owner
                 Properties = new List<PropertyDto>()
             };
 
-            var ownertEntity = new Ownert
+            var ownertEntity = new Domain.Entities.Owner
             {
                 IdOwner = "generated-id",
                 Name = command.Name,
@@ -56,7 +56,7 @@ namespace RealEstate.Application.Tests.Handlers.Owner
                 Properties = new List<PropertyDto>()
             };
 
-            _mapperMock.Setup(m => m.Map<Ownert>(command)).Returns(ownertEntity);
+            _mapperMock.Setup(m => m.Map<Domain.Entities.Owner>(command)).Returns(ownertEntity);
             _repositoryMock.Setup(r => r.AddAsync(ownertEntity)).Returns(Task.CompletedTask);
             _mapperMock.Setup(m => m.Map<OwnertDto>(ownertEntity)).Returns(ownertDto);
 
@@ -64,7 +64,7 @@ namespace RealEstate.Application.Tests.Handlers.Owner
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mapperMock.Verify(m => m.Map<Ownert>(command), Times.Once);
+            _mapperMock.Verify(m => m.Map<Domain.Entities.Owner>(command), Times.Once);
             _repositoryMock.Verify(r => r.AddAsync(ownertEntity), Times.Once);
             _mapperMock.Verify(m => m.Map<OwnertDto>(ownertEntity), Times.Once);
 
