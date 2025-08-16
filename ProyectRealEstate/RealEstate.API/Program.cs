@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using RealEstate.API.Extensions;
 using RealEstate.Application;
 using RealEstate.Application.Handlers.Owner;
@@ -36,6 +37,8 @@ builder.Services.AddCors(options =>
                    .AllowAnyHeader();
         });
 });
+
+
 
 // Dependency Injection
 builder.Services.AddApplication();
