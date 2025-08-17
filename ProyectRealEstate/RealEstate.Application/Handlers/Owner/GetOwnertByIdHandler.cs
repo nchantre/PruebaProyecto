@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
-using RealEstate.Application.Owers.DTOs;
+using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Application.Queries.Owner;
 using RealEstate.Application.Services;
 
 namespace RealEstate.Application.Handlers.Owner
 {
-    public class GetOwnertByIdHandler : IRequestHandler<GetOwnertByIdQuery, OwnerDto>
+    public class GetOwnertByIdHandler : IRequestHandler<GetOwnertByIdQuery, ResponseOwnerDto>
     {
         private readonly OwnerService _service;
         private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ namespace RealEstate.Application.Handlers.Owner
             _mapper = mapper;
         }
 
-        public async Task<OwnerDto> Handle(GetOwnertByIdQuery query, CancellationToken ct)
+        public async Task<ResponseOwnerDto> Handle(GetOwnertByIdQuery query, CancellationToken ct)
         {
             //var ownert = await _service.GetByIdAsync(query.IdOwner)
             //    ?? throw new KeyNotFoundException("Owner not found");
@@ -29,7 +29,7 @@ namespace RealEstate.Application.Handlers.Owner
             {
                 throw new KeyNotFoundException($"Owner with Id {query.IdOwner} not found in DB");
             }
-            return _mapper.Map<OwnerDto>(ownert);
+            return _mapper.Map<ResponseOwnerDto>(ownert);
         }
     }
 }

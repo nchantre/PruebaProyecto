@@ -1,16 +1,20 @@
-﻿using MediatR;
-using RealEstate.Application.Owers.DTOs;
-using RealEstate.Application.Owers.DTOs.Request;
-using RealEstate.Application.Owers.DTOs.Response;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace RealEstate.Application.Commands.Owner
+namespace RealEstate.Application.Owers.DTOs.Request
 {
-    public class CreateOwnertCommand : IRequest<ResponseOwnerDto>
-    {
+
+        public class RequestOwnerDto
+        {
+        //public string? IdOwner { get; set; } = default!;
         public string Name { get; set; } = default!;
         public string Address { get; set; } = default!;
         public string Photo { get; set; } = default!;
         public DateTime Birthday { get; set; }
         public List<RequestPropertyDto> Properties { get; set; } = new();
     }
+  
 }

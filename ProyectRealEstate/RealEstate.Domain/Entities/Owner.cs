@@ -10,9 +10,6 @@ namespace RealEstate.Domain.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string IdOwner { get; set; } = default!;
-
-
-
         public string Name { get; set; } = default!;
         public string Address { get; set; } = default!;
         public string Photo { get; set; } = default!;

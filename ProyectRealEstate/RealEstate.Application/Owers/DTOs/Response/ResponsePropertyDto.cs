@@ -1,15 +1,16 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using System.Diagnostics.CodeAnalysis;
+﻿using RealEstate.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace RealEstate.Domain.Entities
+namespace RealEstate.Application.Owers.DTOs.Response
 {
-    [ExcludeFromCodeCoverage]
-    public class Property
+    public class ResponsePropertyDto
     {
 
-        [BsonId]
-
-        public string Id { get; set; } = Guid.NewGuid().ToString("N");
+        public string Id { get; set; } = default!;
         public string Name { get; set; } = default!;
         public string Address { get; set; } = default!;
         public decimal Price { get; set; }

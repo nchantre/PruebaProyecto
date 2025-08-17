@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RealEstate.Application.Commands.Owner;
 using RealEstate.Application.Owers.DTOs;
+using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Application.Queries.Owner;
 
 namespace RealEstate.API.Controllers
@@ -19,7 +20,7 @@ namespace RealEstate.API.Controllers
         /// Crear un nuevo propietario
         /// </summary>
         [HttpPost]
-        [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ResponseOwnerDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateOwnertCommand command)
         {
@@ -29,14 +30,14 @@ namespace RealEstate.API.Controllers
             var result = await _mediator.Send(command);
 
             // Devuelve 201 Created con la URL del recurso creado
-            return CreatedAtAction(nameof(GetById), new { id = result.IdOwner, version = "1.0" }, result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Name, version = "1.0" }, result);
         }
 
         /// <summary>
         /// Actualizar un propietario existente
         /// </summary>
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseOwnerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateOwnertCommand command)
         {
@@ -65,14 +66,14 @@ namespace RealEstate.API.Controllers
             if (!deleted)
                 return NotFound($"No se encontró el propietario con Id = {id}");
 
-            return NoContent();
+            return Ok(new { Id = id });
         }
 
         /// <summary>
         /// Obtener un propietario por Id
         /// </summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseOwnerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(string id)
         {
@@ -88,7 +89,7 @@ namespace RealEstate.API.Controllers
         /// Obtener todos los propietarios
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(typeof(List<OwnerDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ResponseOwnerDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await _mediator.Send(new GetAllOwnertsQuery());

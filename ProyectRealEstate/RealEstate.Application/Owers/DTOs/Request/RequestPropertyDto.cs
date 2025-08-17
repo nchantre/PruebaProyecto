@@ -1,12 +1,18 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace RealEstate.Application.Owers.DTOs
+namespace RealEstate.Application.Owers.DTOs.Request
 {
-    public class PropertyDto
-    {
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+  
 
-        public string? Id { get; set; } = default!;
+
+    public class RequestPropertyDto
+    {
+    
         public string Name { get; set; } = default!;
         public string Address { get; set; } = default!;
         public decimal Price { get; set; }
