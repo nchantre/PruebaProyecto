@@ -31,16 +31,20 @@ namespace RealEstate.Application.Mappings
 
             // Entity ->
             CreateMap<Owner, UpdateOwnertCommand>().ReverseMap();
-            CreateMap<Property, PropertyDto>().ReverseMap();
+
             CreateMap<PropertyImage, PropertyImageDto>().ReverseMap();
             CreateMap<PropertyTrace, PropertyTraceDto>().ReverseMap();
 
             // Command -> Entity
             CreateMap<CreateOwnertCommand, Owner>();
            // CreateMap<UpdateOwnertCommand, Owner>();
-            CreateMap<PropertyDto, Property>();
+
             CreateMap<PropertyImageDto, PropertyImage>();
             CreateMap<PropertyTraceDto, PropertyTrace>();
+
+
+
+     
 
 
 

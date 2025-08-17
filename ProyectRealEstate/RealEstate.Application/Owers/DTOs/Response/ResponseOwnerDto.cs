@@ -13,6 +13,6 @@ namespace RealEstate.Application.Owers.DTOs.Response
         public string Address { get; set; } = default!;
         public string Photo { get; set; } = default!;
         public DateTime Birthday { get; set; }
-        public List<PropertyDto> Properties { get; set; } = new();
+        public List<ResponsePropertyDto> Properties { get; set; } = new();
     }
 }
