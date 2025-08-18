@@ -49,7 +49,7 @@ namespace RealEstate.Infrastructure
             services.AddScoped<IOwnerRepository, OwnerRepository>();
 
             // Servicios
-            services.AddScoped<OwnerService>();
+            services.AddScoped<IOwnerService ,OwnerService>();
 
             // Configurar servicio de logs
             var logAPIBaseURL = configuration.GetRequiredSection("ApiCentralLog:UrlBase").Value;

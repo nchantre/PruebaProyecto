@@ -1,12 +1,16 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NUnit.Framework;
 using RealEstate.API.Controllers;
 using RealEstate.Application.Commands.Owner;
-using RealEstate.Application.Owers.DTOs;
+using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Application.Queries.Owner;
 
-namespace RealEstate.API.Tests.Controllers
+namespace RealEstate.API.Tests
 {
     [TestFixture]
     public class RealEstateControllerTests
@@ -15,85 +19,157 @@ namespace RealEstate.API.Tests.Controllers
         private RealEstateController _controller;
 
         [SetUp]
-        public void SetUp()
+        public void Setup()
         {
             _mediatorMock = new Mock<IMediator>();
             _controller = new RealEstateController(_mediatorMock.Object);
         }
 
         [Test]
-        public async Task Create_Returns_Ok_With_OwnertDto()
+        public async Task Create_ReturnsCreatedAtAction_WhenCommandIsValid()
         {
-            var command = new CreateOwnertCommand { Name = "Test", Address = "Addr", Photo = "Photo", Birthday = DateTime.Today, Properties = new List<PropertyDto>() };
-            var expectedDto = new OwnertDto { IdOwner = "1", Name = "Test", Address = "Addr", Photo = "Photo", Birthday = DateTime.Today, Properties = new List<PropertyDto>() };
+            // Arrange
+            var command = new CreateOwnertCommand { Name = "Juan Perez" };
+            var response = new ResponseOwnerDto { IdOwner = "1", Name = "Juan Perez" };
 
-            _mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(expectedDto);
+            _mediatorMock
+                .Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
 
-            var result = await _controller.Create(command);
+            // Act
+            var result = await _controller.Create(command) as CreatedAtActionResult;
 
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult!.Value, Is.EqualTo(expectedDto));
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("GetById", result.ActionName);
+            Assert.AreEqual(response, result.Value);
         }
 
         [Test]
-        public async Task Update_Returns_Ok_With_OwnertDto()
+        public async Task Create_ReturnsBadRequest_WhenCommandIsNull()
         {
-            var command = new UpdateOwnertCommand { Name = "Test", Address = "Addr", Photo = "Photo", Birthday = DateTime.Today, Properties = new List<PropertyDto>() };
-            var expectedDto = new OwnertDto { IdOwner = "1", Name = "Test", Address = "Addr", Photo = "Photo", Birthday = DateTime.Today, Properties = new List<PropertyDto>() };
+            // Act
+            var result = await _controller.Create(null);
 
-            _mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(expectedDto);
-
-            var result = await _controller.Update("1", command);
-
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult!.Value, Is.EqualTo(expectedDto));
-            Assert.That(command.IdOwner, Is.EqualTo("1"));
+            // Assert
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
-        public async Task Delete_Returns_NoContent()
+        public async Task Update_ReturnsOk_WhenOwnerExists()
         {
-            _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteOwnertCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            // Arrange
+            var command = new UpdateOwnertCommand { IdOwner = "1", Name = "Pedro" };
+            var response = new ResponseOwnerDto { IdOwner = "1", Name = "Pedro" };
 
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<UpdateOwnertCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _controller.Update("1", command) as OkObjectResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(response, result.Value);
+        }
+
+        [Test]
+        public async Task Update_ReturnsNotFound_WhenOwnerDoesNotExist()
+        {
+            // Arrange
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<UpdateOwnertCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((ResponseOwnerDto)null);
+
+            // Act
+            var result = await _controller.Update("99", new UpdateOwnertCommand()) as NotFoundObjectResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            StringAssert.Contains("No se encontró el propietario", result.Value.ToString());
+        }
+
+        [Test]
+        public async Task Delete_ReturnsOk_WhenDeleted()
+        {
+            // Arrange
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<DeleteOwnertCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var result = (OkObjectResult)await _controller.Delete("123");
+            var value = result.Value as ResponseDeleteDto;
+            Assert.That(value!.Id, Is.EqualTo("123"));
+        }
+
+        [Test]
+        public async Task Delete_ReturnsNotFound_WhenNotDeleted()
+        {
+            // Arrange
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<DeleteOwnertCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            // Act
             var result = await _controller.Delete("1");
 
-            Assert.IsInstanceOf<NoContentResult>(result);
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
         }
 
         [Test]
-        public async Task GetById_Returns_Ok_With_OwnertDto()
+        public async Task GetById_ReturnsOk_WhenOwnerExists()
         {
-            var expectedDto = new OwnertDto { IdOwner = "1", Name = "Test", Address = "Addr", Photo = "Photo", Birthday = DateTime.Today, Properties = new List<PropertyDto>() };
+            // Arrange
+            var response = new ResponseOwnerDto { IdOwner = "1", Name = "Juan" };
 
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetOwnertByIdQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedDto);
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetOwnertByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
 
-            var result = await _controller.GetById("1");
+            // Act
+            var result = await _controller.GetById("1") as OkObjectResult;
 
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult!.Value, Is.EqualTo(expectedDto));
-
-
-
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(response, result.Value);
         }
 
         [Test]
-        public async Task GetAll_Returns_Ok_With_ListOfOwnertDto()
+        public async Task GetById_ReturnsNotFound_WhenOwnerDoesNotExist()
         {
-            var expectedList = new List<OwnertDto>
+            // Arrange
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetOwnertByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((ResponseOwnerDto)null);
+
+            // Act
+            var result = await _controller.GetById("99");
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+        }
+
+        [Test]
+        public async Task GetAll_ReturnsOk_WithList()
+        {
+            // Arrange
+            var response = new List<ResponseOwnerDto>
             {
-                new OwnertDto { IdOwner = "1", Name = "Test", Address = "Addr", Photo = "Photo", Birthday = DateTime.Today, Properties = new List<PropertyDto>() }
+                new ResponseOwnerDto { IdOwner = "1", Name = "Juan" }
             };
 
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetAllOwnertsQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedList);
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetAllOwnertsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
 
-            var result = await _controller.GetAll();
+            // Act
+            var result = await _controller.GetAll() as OkObjectResult;
 
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult!.Value, Is.EqualTo(expectedList));
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(response, result.Value);
         }
     }
 }

@@ -4,17 +4,18 @@ using RealEstate.Application.Commands.Owner;
 using RealEstate.Application.Owers.DTOs;
 using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Application.Services;
+using RealEstate.Domain.Interfaces;
 
 
 namespace RealEstate.Application.Handlers.Owner
 {
     public class UpdateOwnertHandler : IRequestHandler<UpdateOwnertCommand, ResponseOwnerDto>
     {
-        private readonly OwnerService _service;
+        private readonly IOwnerService _service;
 
         private readonly IMapper _mapper;
 
-        public UpdateOwnertHandler(OwnerService service, IMapper mapper)
+        public UpdateOwnertHandler(IOwnerService service, IMapper mapper)
         {
             _service = service;
             _mapper = mapper;

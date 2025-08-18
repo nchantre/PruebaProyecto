@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using RealEstate.Application.Commands.Owner;
 using RealEstate.Application.Services;
+using RealEstate.Domain.Interfaces;
 
 
 namespace RealEstate.Application.Handlers.Owner
@@ -8,9 +9,9 @@ namespace RealEstate.Application.Handlers.Owner
     public class DeleteOwnertHandler : IRequestHandler<DeleteOwnertCommand, bool>
     {
 
-        private readonly OwnerService _service;
+        private readonly IOwnerService _service;
 
-        public DeleteOwnertHandler(OwnerService service)
+        public DeleteOwnertHandler(IOwnerService service)
         {
             _service = service;
         }

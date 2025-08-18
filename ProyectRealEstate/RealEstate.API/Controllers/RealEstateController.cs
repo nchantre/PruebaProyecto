@@ -66,7 +66,7 @@ namespace RealEstate.API.Controllers
             if (!deleted)
                 return NotFound($"No se encontró el propietario con Id = {id}");
 
-            return Ok(new { Id = id });
+            return Ok(new ResponseDeleteDto { Id = id });
         }
 
         /// <summary>

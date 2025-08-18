@@ -4,7 +4,7 @@ using RealEstate.Domain.Interfaces;
 
 namespace RealEstate.Application.Services
 {
-    public class OwnerService
+    public class OwnerService: IOwnerService
     {
         private readonly IOwnerRepository _ownerRepository;
 

@@ -3,15 +3,16 @@ using MediatR;
 using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Application.Queries.Owner;
 using RealEstate.Application.Services;
+using RealEstate.Domain.Interfaces;
 
 namespace RealEstate.Application.Handlers.Owner
 {
     public class GetOwnertByIdHandler : IRequestHandler<GetOwnertByIdQuery, ResponseOwnerDto>
     {
-        private readonly OwnerService _service;
+        private readonly IOwnerService _service;
         private readonly IMapper _mapper;
 
-        public GetOwnertByIdHandler(OwnerService service, IMapper mapper)
+        public GetOwnertByIdHandler(IOwnerService service, IMapper mapper)
         {
             _service = service;
             _mapper = mapper;

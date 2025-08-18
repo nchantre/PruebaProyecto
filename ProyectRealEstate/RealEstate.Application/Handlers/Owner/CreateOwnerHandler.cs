@@ -6,16 +6,17 @@ using RealEstate.Application.Owers.DTOs.Request;
 using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Application.Services;
 using RealEstate.Domain.Entities;
+using RealEstate.Domain.Interfaces;
 
 namespace RealEstate.Application.Handlers.Owner
 {
 
     public class CreateOwnertHandler : IRequestHandler<CreateOwnertCommand, ResponseOwnerDto>
     {
-        private readonly OwnerService _service;
+        private readonly IOwnerService _service;
         private readonly IMapper _mapper;
 
-        public CreateOwnertHandler(OwnerService service, IMapper mapper)
+        public CreateOwnertHandler(IOwnerService service, IMapper mapper)
         {
             _service = service;
             _mapper = mapper;
