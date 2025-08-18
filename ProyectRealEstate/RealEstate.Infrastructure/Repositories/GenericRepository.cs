@@ -18,17 +18,29 @@ namespace RealEstate.Infrastructure.Repositories
             _entityName = typeof(T).Name;
         }
 
+
+        // Constructor para tests
+        public GenericRepository(IMongoCollection<T> collection)
+        {
+            _collection = collection;
+            _entityName = typeof(T).Name;
+        }
+
+
+
+
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            try
+            if (_collection == null)
             {
-                return await _collection.Find(_ => true).ToListAsync();
+                throw new InvalidOperationException("Collection is not initialized");
             }
-            catch (MongoException ex)
-            {
-                throw new Exception($"Error retrieving all {_entityName} from DB.", ex);
-            }
+
+            var cursor = await _collection.FindAsync(_ => true);
+            return await cursor.ToListAsync();
         }
+
+      
 
         public async Task<T?> GetByIdAsync(string id)
         {
@@ -52,17 +64,7 @@ namespace RealEstate.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
-        {
-            try
-            {
-                return await _collection.Find(predicate).ToListAsync();
-            }
-            catch (MongoException ex)
-            {
-                throw new Exception($"Error finding {_entityName} with given predicate.", ex);
-            }
-        }
+
 
         public async Task AddAsync(T entity)
         {
