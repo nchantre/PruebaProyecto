@@ -1,5 +1,4 @@
-﻿// Repositories/OwnerRepository.cs
-using RealEstate.Domain.Entities;
+﻿using RealEstate.Domain.Entities;
 using RealEstate.Domain.Interfaces;
 using RealEstate.Infrastructure.Database;
 

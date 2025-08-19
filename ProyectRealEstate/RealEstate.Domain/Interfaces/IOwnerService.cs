@@ -1,4 +1,6 @@
 ﻿using RealEstate.Domain.Entities;
+using RealEstate.Domain.Entities.Filter;
+using RealEstate.Domain.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +16,6 @@ namespace RealEstate.Domain.Interfaces
         Task AddAsync(Owner owner);
         Task UpdateAsync(string id, Owner owner);
         Task DeleteAsync(string id);
+        Task<IEnumerable<Owner>> GetBySpecificationAsync(PropertySearchParams searchParams);
     }
 }

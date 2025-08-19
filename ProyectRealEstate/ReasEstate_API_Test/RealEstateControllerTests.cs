@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using RealEstate.API.Controllers;
 using RealEstate.Application.Commands.Owner;
+using RealEstate.Application.Owers.DTOs.Filter;
 using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Application.Queries.Owner;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RealEstate.API.Tests
 {
@@ -171,5 +172,56 @@ namespace RealEstate.API.Tests
             Assert.IsNotNull(result);
             Assert.AreEqual(response, result.Value);
         }
+
+
+        [Test]
+        public async Task SearchByProperties_WhenRequestIsNull_ReturnsBadRequest()
+        {
+            // Arrange
+            PropertySearchParamsDto req = null;
+
+            // Act
+            var result = await _controller.SearchByProperties(req);
+
+            // Assert
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            var badRequest = result as BadRequestObjectResult;
+            Assert.AreEqual("Los parámetros de búsqueda no pueden ser nulos.", badRequest.Value);
+        }
+
+        [Test]
+        public async Task SearchByProperties_WhenValidRequest_ReturnsOkWithData()
+        {
+            // Arrange
+            var req = new PropertySearchParamsDto
+            {
+                Name = "Juan",
+                Address = "Calle 123",
+                Page = 1,
+                PageSize = 10
+            };
+
+            var expectedOwners = new List<ResponseOwnerDto>
+            {
+                new ResponseOwnerDto { Name = "Juan", Address = "Calle 123" },
+                new ResponseOwnerDto { Name = "Pedro", Address = "Av Siempre Viva" }
+            };
+
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetOwnersFilterQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedOwners);
+
+            // Act
+            var result = await _controller.SearchByProperties(req);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var okResult = result as OkObjectResult;
+            Assert.IsInstanceOf<IEnumerable<ResponseOwnerDto>>(okResult.Value);
+
+            var owners = okResult.Value as IEnumerable<ResponseOwnerDto>;
+            CollectionAssert.AreEquivalent(expectedOwners, owners);
+        }
+
     }
 }

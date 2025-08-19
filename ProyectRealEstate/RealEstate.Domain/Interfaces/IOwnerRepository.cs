@@ -1,4 +1,4 @@
-﻿// Interfaces/IOwnerRepository.cs
+﻿
 using RealEstate.Domain.Entities;
 
 namespace RealEstate.Domain.Interfaces

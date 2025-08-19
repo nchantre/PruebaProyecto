@@ -1,6 +1,7 @@
 ﻿using Moq;
 using RealEstate.Application.Services;
 using RealEstate.Domain.Entities;
+using RealEstate.Domain.Entities.Filter;
 using RealEstate.Domain.Interfaces;
 
 namespace RealEstate.Tests.Services
@@ -93,5 +94,57 @@ namespace RealEstate.Tests.Services
             // Assert
             _repositoryMock.Verify(r => r.DeleteAsync("1"), Times.Once);
         }
+
+        [Test]
+        public async Task GetBySpecificationAsync_WithValidParams_ReturnsOwners()
+        {
+            // Arrange
+            var searchParams = new PropertySearchParams
+            {
+                Name = "Juan",
+                Address = "Calle 123"
+            };
+
+            var expectedOwners = new List<Owner>
+            {
+                new Owner { Name = "Juan", Address = "Calle 123" },
+                new Owner { Name = "Pedro", Address = "Av. Siempre Viva" }
+            };
+
+            _repositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<OwnersByPropertyFiltersSpec>()))
+                .ReturnsAsync(expectedOwners);
+
+            // Act
+            var result = await _service.GetBySpecificationAsync(searchParams);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, ((List<Owner>)result).Count);
+            Assert.AreEqual("Juan", ((List<Owner>)result)[0].Name);
+
+            _repositoryMock.Verify(r => r.GetAsync(It.IsAny<OwnersByPropertyFiltersSpec>()), Times.Once);
+        }
+
+        [Test]
+        public async Task GetBySpecificationAsync_WhenNoOwnersFound_ReturnsEmptyList()
+        {
+            // Arrange
+            var searchParams = new PropertySearchParams { Name = "NoExiste" };
+
+            _repositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<OwnersByPropertyFiltersSpec>()))
+                .ReturnsAsync(new List<Owner>());
+
+            // Act
+            var result = await _service.GetBySpecificationAsync(searchParams);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsEmpty(result);
+
+            _repositoryMock.Verify(r => r.GetAsync(It.IsAny<OwnersByPropertyFiltersSpec>()), Times.Once);
+        }
+
     }
 }

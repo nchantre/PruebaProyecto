@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using RealEstate.Application.Commands.Owner;
 using RealEstate.Application.Owers.DTOs;
+using RealEstate.Application.Owers.DTOs.Filter;
 using RealEstate.Application.Owers.DTOs.Request;
 using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Domain.Entities;
+using RealEstate.Domain.Entities.Filter;
 using System.Net;
 
 namespace RealEstate.Application.Mappings
@@ -12,6 +14,15 @@ namespace RealEstate.Application.Mappings
     {
         public OwnertProfile()
         {
+
+            // Search Params
+            CreateMap<PropertySearchParamsDto, PropertySearchParams>();
+            CreateMap<PropertySearchParams, PropertySearchParamsDto>();
+
+            // Domain → DTO
+            CreateMap<Owner, RequestOwnerDto>()
+                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.Properties));
+
 
             CreateMap<RequestOwnerDto, Owner>()
              .ForMember(dest => dest.IdOwner, opt => opt.Ignore())

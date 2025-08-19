@@ -1,5 +1,6 @@
 ﻿// Services/OwnerService.cs
 using RealEstate.Domain.Entities;
+using RealEstate.Domain.Entities.Filter;
 using RealEstate.Domain.Interfaces;
 
 namespace RealEstate.Application.Services
@@ -18,5 +19,14 @@ namespace RealEstate.Application.Services
         public Task AddAsync(Owner owner) => _ownerRepository.AddAsync(owner);
         public Task UpdateAsync(string id, Owner owner) => _ownerRepository.UpdateAsync(id, owner);
         public Task DeleteAsync(string id) => _ownerRepository.DeleteAsync(id);
+
+        public Task<IEnumerable<Owner>> GetBySpecificationAsync(PropertySearchParams searchParams)
+        {
+            var spec = new OwnersByPropertyFiltersSpec(searchParams);
+            return _ownerRepository.GetAsync(spec);
+        }
+
+
+
     }
 }

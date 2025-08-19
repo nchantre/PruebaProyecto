@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RealEstate.Application.Commands.Owner;
-using RealEstate.Application.Owers.DTOs;
+using RealEstate.Application.Owers.DTOs.Filter;
+using RealEstate.Application.Owers.DTOs.Request;
 using RealEstate.Application.Owers.DTOs.Response;
 using RealEstate.Application.Queries.Owner;
 
@@ -95,5 +96,30 @@ namespace RealEstate.API.Controllers
             var result = await _mediator.Send(new GetAllOwnertsQuery());
             return Ok(result);
         }
+
+
+        /// <summary>
+        /// Buscar propietarios según filtros de propiedades
+        /// </summary>
+        /// <param name="req">Parámetros de búsqueda de propiedades</param>
+        /// <returns>Lista de propietarios filtrados</returns>
+        [HttpPost("search")]
+        [ProducesResponseType(typeof(IEnumerable<ResponseOwnerDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SearchByProperties([FromBody] PropertySearchParamsDto req)
+        {
+            if (req == null)
+                return BadRequest("Los parámetros de búsqueda no pueden ser nulos.");
+
+            var query = new GetOwnersFilterQuery
+            {
+                SearchParams = req
+            };
+
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
+        }
+
     }
 }

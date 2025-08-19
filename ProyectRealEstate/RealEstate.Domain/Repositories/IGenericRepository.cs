@@ -1,4 +1,4 @@
-// Interfaces/IRepository.cs
+using RealEstate.Domain.Specifications;
 using System.Linq.Expressions;
 
 namespace RealEstate.Domain.Interfaces
@@ -10,6 +10,10 @@ namespace RealEstate.Domain.Interfaces
         Task AddAsync(T entity);
         Task UpdateAsync(string id, T entity);
         Task DeleteAsync(string id);
+
+        Task<IEnumerable<T>> GetAsync(ISpecification<T> specification);
+        Task<IEnumerable<TResult>> GetAsync<TResult>(ISpecification<T, TResult> specification); // <- nueva
+        Task<int> CountAsync(ISpecification<T> specification); // opcional
     }
     
 }
